@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Brookshear Machine emulator</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+  <a href="https://github.com/joeledstrom/brookshear-emu">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"    
+    src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" 
+    alt="Fork me on GitHub">
+  </a>
+  <div id="float-container">
+    <div id="cpu" class="block">
+      <h1>CPU</h1>
+      <div id="gprs_container"></div>
+      <div id="pc_and_ir">
+        
+        <table>
+          <tr><th>PC</th><td><span id="pc_value"></span></td></tr>
+          <tr><th>IR</th><td><span id="ir_value"></span></td></tr>
+          <tr><th>Decoded</th><td><span id="dec_value"></span></td></tr>
+        </table>
+        
+        <div id="status">
+          <span id="fetch">FETCH</span>
+          <span id="decode">DECODE</span>
+          <span id="execute">EXECUTE</span>
+        
+          <div id="buttons">
+            <p><input type="button" value="Clear and Run" id="clear_and_run"></p>
+            <p><input type="button" value="Clear CPU" id="clear"></p>
+            <p><input type="button" value="Run" id="run"></p>
+            <p><input type="button" value="Step" id="step"></p>
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>  
+    <div id="memory" class="block">
+      <h1>Memory</h1>
+    </div>
+    
+    <div class="block">
+      <h1>Inspector</h1>
+      <div id="inspector">
+        <table>
+          <tr><th>address</th><td><span id="addr"></span></td></tr>
+          <tr><th>hex</th><td><span id="hex_value"></span></td></tr>
+          <tr><th>binary</th><td><span id="binary_value"></span></td></tr>
+          <tr><th>signed</th><td><span id="signed_value"></span></td></tr>
+          <tr><th>float</th><td><span id="float_value"></span></td></tr>
+        </table>
+      </div>
+    </div>
+    
+  </div>
+
+  <script type="text/javascript" src="./target/scala-2.10/brookshear-emu-opt.js"></script>
+
+</body>
+</html>
