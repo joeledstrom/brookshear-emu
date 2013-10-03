@@ -1,7 +1,12 @@
-Brookshear Machine emulator
-==============
+# Brookshear Machine emulator
+
 A experimental Scala.js/HTML/CSS implementation of the made up machine described in the book "Computer Science: An Overview, by J. Glenn Brookshear" 
 
-##### Missing
-- Nicer looking user interface
+Instructions on how to compile haven't changed from the Scala.js template its based on: https://github.com/sjrd/scala-js-example-app
+
+Precompiled and optimized version available here: http://joeledstrom.github.io/brookshear-emu/
+
+### Missing
 - Float addition implementation (instruction opcode 0x6)
+- Visualization of where the PC is pointing to in memory
+- Nicer looking user interface
