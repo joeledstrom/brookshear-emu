@@ -52,4 +52,5 @@ case class MachineState private (memory: Seq[MachineWord], gprs: Seq[MachineWord
 
 object MachineState {
   def apply() = new MachineState(Vector.fill(256)(0), Vector.fill(16)(0), 0, (0,0), Undefined, Initial)
+  def apply(mem: Seq[MachineWord]) = new MachineState(mem, Vector.fill(16)(0), 0, (0,0), Undefined, Initial)
 }

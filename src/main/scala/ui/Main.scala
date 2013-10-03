@@ -2,6 +2,8 @@ package ui
 
 import js.Dynamic.{ global => g }
 import emulator._
+import scala.util._
+
 
 
 object Main {
@@ -39,6 +41,36 @@ object Main {
     current foreach (_.style.backgroundColor = "red")
   }
   
+  def updateHashLink() {
+    val hashlink = g.document.getElementById("hashlink")
+    hashlink.href = "#" + (ms.memory.reverse.foldLeft(("", false)) { 
+      case ((z, false), x) => if (0 == x.unsignedValue) (z, false) else (x.toHexString + z, true)
+      case ((z, true), x) => (x.toHexString + z, true)
+    })._1
+  }
+  
+  def readHashLink() {
+    val hash = g.window.location.hash.asInstanceOf[String]
+    
+    if (hash.length <= 1) return
+    
+    val decodedHashData = Try(hash.tail.grouped(2) map { (s) =>
+      val hexValue = Try(Integer.parseInt(s, 16)) filter (v => v >=0 && v <= 0xff)
+      
+      hexValue match {
+        case Success(v) => MachineWord(v)
+        case _ => throw new Exception("parse error")
+      }
+    })
+    
+    for {
+      l <- decodedHashData
+      lSeq = l.toSeq
+    } { 
+      ms = MachineState(lSeq ++ Vector.fill(256 - lSeq.length)(MachineWord(0))) 
+    }
+  }
+  
   def updateUI() {
     memoryTable.setData(ms.memory)
     registerTable.setData(ms.gprs)
@@ -46,17 +78,19 @@ object Main {
     g.document.getElementById("ir_value").textContent = ms.ir._1.toHexString + ms.ir._2.toHexString
     g.document.getElementById("dec_value").textContent = ms.decodedInstruction.toString
     updateLights()
+    updateHashLink()
     // TODO: disable buttons while running
   }
   def main(): Unit = {
+    
+    readHashLink()
     
     updateUI()
     
     memoryTable.onChangeHandler = (address: MachineWord, value: MachineWord) => {
       ms = ms.withUpdatedMemory(address, value)
-      memoryTable.setData(ms.memory)
+      updateUI()
     }
-    
     
     val addr = g.document.getElementById("addr")
     val hex_value = g.document.getElementById("hex_value")
