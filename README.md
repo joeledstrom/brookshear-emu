@@ -7,6 +7,6 @@ Instructions on how to compile haven't changed from the Scala.js template its ba
 Precompiled and optimized version available here: http://joeledstrom.github.io/brookshear-emu/
 
 ### Missing
-- Float addition implementation (instruction opcode 0x6)
 - Visualization of where the PC is pointing to in memory
 - Nicer looking user interface
+- Testing

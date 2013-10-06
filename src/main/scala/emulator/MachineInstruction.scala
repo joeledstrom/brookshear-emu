@@ -70,18 +70,50 @@ case class AddInt(r: Int, s: Int, t: Int) extends MachineInstruction {
 }
 
 case class AddFloat(r: Int, s: Int, t: Int) extends MachineInstruction {
-
-  assert(false, "Floating point addition not implemented yet")
-  
+    
   override def execute(st: MachineState) = {  
+    import scala.annotation.tailrec
+    
     val (s_signbit, s_exponent_excess, s_mantissa) = st.gprs(s).floatComponents
     val (t_signbit, t_exponent_excess, t_mantissa) = st.gprs(t).floatComponents
-    
-    val (s_exponent, t_exponent) = (s_exponent_excess - 4, t_exponent_excess - 4)
-    
   
-    st
+    // unify exponents by converting both floating points values to
+    // to fixed point with the same implied exponent of -4
+    val s_fixed = (1 - 2*s_signbit) * (s_mantissa << s_exponent_excess)
+    val t_fixed = (1 - 2*t_signbit) * (t_mantissa << t_exponent_excess)
+    
+    // use the built in integer adder to add
+    val r_fixed = s_fixed + t_fixed
+    
+    // seperate out sign
+    val r_signbit = if (r_fixed < 0) 1 else 0
+    val r_mantissa_fixed = if (r_signbit == 0) r_fixed else -r_fixed
+    
+    // special case if the mantissa is 0
+    if (r_mantissa_fixed == 0) st.withUpdatedGPR(r, MachineWord(0x00))  
+    
+    @tailrec
+    def normalise(f: Int, e_excess: Int): (Int, Int) = {        
+      val p = (f >>> e_excess) & 0xf
+      
+      // IF the MSB of the potential mantissa is 1 (which means we found its normalized form)
+      // OR the input data wasn't in normalized form, then we silently return a non-normalized result
+      //    since this machine doesn't have any form of status/error flags
+      if (((p >>> 3) & 0x1) == 1 || e_excess == 0)
+        (p, e_excess)
+      else
+        normalise(f, e_excess - 1)
+    }
+    
+    val (r_mantissa, r_exp_excess) = normalise(r_mantissa_fixed, 8)  // start at 8 to test for overflow
+    
+    if (r_exp_excess > 7) // if overflow: return the biggest storable absolute value with correct sign
+      st.withUpdatedGPR(r, MachineWord(r_signbit << 7 | 7 << 4 | 0xf)) 
+    else
+      st.withUpdatedGPR(r, MachineWord(r_signbit << 7 | r_exp_excess << 4 | r_mantissa))
   }
+  
+  override def toString = s"ADD_FLOAT r$r <- r$s + r$t"
 }
 
 case class BitwiseOp(r: Int, s: Int, t: Int, op: (Int,Int) => Int, toStringPattern: String) extends MachineInstruction {
