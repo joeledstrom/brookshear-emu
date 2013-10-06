@@ -74,7 +74,7 @@
   text-align: right;
 }
 
-#hashlink {
+.with_margin {
   margin: 10px;
 }
 
