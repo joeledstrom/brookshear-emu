@@ -1,1 +1,2 @@
-addSbtPlugin("ch.epfl.lamp" % "scalajs-sbt-plugin" % "0.1-SNAPSHOT")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.19")
+

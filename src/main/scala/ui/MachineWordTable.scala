@@ -1,7 +1,9 @@
 package ui
 
-import js.Dynamic.{ global => g }
+import scala.scalajs.js.Dynamic.{global => g}
 import emulator.MachineWord
+
+import scala.scalajs.js
 import scala.util._
 
 
@@ -15,7 +17,7 @@ class MachineWordTable(cols: Int, showFirstHeaderRow: Boolean, customHeaderRow: 
   
   var onHoverHandler: (Option[MachineWord] => Unit) = null
   
-  private var _data: Seq[MachineWord] = Seq.empty;
+  private var _data: Seq[MachineWord] = Seq.empty
 
   private lazy val tableElement = g.document.createElement("table")
   
@@ -40,7 +42,7 @@ class MachineWordTable(cols: Int, showFirstHeaderRow: Boolean, customHeaderRow: 
     tr
   }
   
-  private var lastIndex: Option[Int] = None;
+  private var lastIndex: Option[Int] = None
   
   private def onInput(text: String, index: Int) {
     
@@ -82,11 +84,11 @@ class MachineWordTable(cols: Int, showFirstHeaderRow: Boolean, customHeaderRow: 
       for ((cell, cellIndex) <- row) {
         
         val td = g.document.createElement("td")
-        td.textContent = f"$cell%02X"
+        td.textContent = f"${cell.toInt}%02X"
         td.contentEditable = true
         
         td.onblur = (e: js.Dynamic) => onInput(td.textContent.toString, cellIndex)
-        td.onkeypress = (e: js.Dynamic) => if (e.keyCode.toString == "13") { 
+        td.onkeypress = (e: js.Dynamic) => if (e.keyCode.toString == "13") {
           lastIndex = Some(cellIndex)
           td.blur()
           e.preventDefault()

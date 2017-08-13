@@ -1,12 +1,14 @@
 package ui
 
-import js.Dynamic.{ global => g }
+import scala.scalajs.js.Dynamic.{global => g}
 import emulator._
+
+import scala.scalajs.js
 import scala.util._
 
 
 
-object Main {
+object Main extends js.JSApp {
   
   var ms = MachineState()
   var running = false
@@ -103,7 +105,7 @@ object Main {
         val memValue = ms.memory(address.unsignedValue)
         addr.textContent = "MEM: 0x" + address.toHexString
         hex_value.textContent = "0x" + memValue.toHexString
-        binary_value.textContent = f"${Integer.toBinaryString(memValue)}%08s"
+        binary_value.textContent = f"${Integer.toBinaryString(memValue)}%8s"
         float_value.textContent = memValue.floatValue
         signed_value.textContent = memValue.signedValue
             
