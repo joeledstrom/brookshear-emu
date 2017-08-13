@@ -11,10 +11,13 @@ case object Initial extends MachineCycleState {
   override def next = Fetch
 }
 case object Fetch extends MachineCycleState {
-  override def enter(st: MachineState) = {
-    val i = (st.memory(st.pc), st.memory(1 + st.pc)) // TODO: Fix out of bounds error
-    st.withUpdatedPC(2 + st.pc).withUpdatedIR(i)
-  }
+  override def enter(st: MachineState) =
+    st.withUpdatedPC(st.pc + 2)
+      .withUpdatedIR((
+        st.memory(st.pc % st.memory.size),
+        st.memory((st.pc + 1) % st.memory.size)
+      ))
+
   override def next = Decode
 }
 case object Decode extends MachineCycleState {
