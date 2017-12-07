@@ -12,7 +12,7 @@ object Main extends js.JSApp {
   
   var ms = MachineState()
   var running = false
-  var wait_time = 100
+  var wait_time = 500
   val memoryTable = new MachineWordTable(16, true)
   val registerTable = new MachineWordTable(1, true, "GPRs")
   
