@@ -12,6 +12,7 @@ object Main extends js.JSApp {
   
   var ms = MachineState()
   var running = false
+  var wait_time = 500
   val memoryTable = new MachineWordTable(16, true)
   val registerTable = new MachineWordTable(1, true, "GPRs")
   
@@ -23,7 +24,7 @@ object Main extends js.JSApp {
     if (ms.cycleState == Halted)
       running = false
     else
-      g.setTimeout(run _, 500)
+      g.setTimeout(run _, wait_time)
   }
 
   def updateLights() {
@@ -127,13 +128,13 @@ object Main extends js.JSApp {
       if (!running) {
         ms = ms.withClearedCPU
         updateUI()
-        g.setTimeout(run _, 500)
+        g.setTimeout(run _, wait_time)
       }
     }
     
     g.document.getElementById("run").onclick = () => {
       if (!running) {
-        g.setTimeout(run _, 500)
+        g.setTimeout(run _, wait_time)
       }
     }
     
@@ -143,6 +144,11 @@ object Main extends js.JSApp {
         updateUI()
       }
     }
-    
+
+    val field = g.document.getElementById("wait_time")
+
+    field.onchange = () => {
+      wait_time = g.parseInt(field.value).asInstanceOf[Int]
+    }
   }
 }
